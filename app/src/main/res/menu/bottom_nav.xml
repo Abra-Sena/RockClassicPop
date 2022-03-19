@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_rock_musics"
+        android:icon="@drawable/ic_home"
+        android:contentDescription="@string/rock_musics"
+        android:title="@string/frag_rock" />
+
+    <item
+        android:id="@+id/navigation_classic_musics"
+        android:icon="@drawable/ic_dashboard"
+        android:contentDescription="@string/classic_musics"
+        android:title="@string/frag_classic" />
+
+    <item
+        android:id="@+id/navigation_pop_musics"
+        android:icon="@drawable/ic_bell"
+        android:contentDescription="@string/pop_musics"
+        android:title="@string/frag_pop" />
+</menu>
