@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RockClassicPop</string>
+    <string name="app_name">RockClassicPop Music</string>
     <string name="frag_classic">Classic</string>
     <string name="frag_pop">Pop</string>
     <string name="frag_rock">Rock</string>

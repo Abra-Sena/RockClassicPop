@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavBar = binding.bottomNav
 
         navController = findNavController(R.id.main_frag_container)
-        setupActionBarWithNavController(navController)
+//        setupActionBarWithNavController(navController)
 //        appBarConfiguration = AppBarConfiguration(navController.graph)
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         bottomNavBar.setupWithNavController(navController)

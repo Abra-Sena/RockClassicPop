@@ -1,18 +1,19 @@
 package com.emissa.apps.rockclassicpop.views
 
 import android.media.MediaPlayer
+import android.os.Handler
 import androidx.fragment.app.Fragment
 
-class BaseFragment : Fragment() {
-//    private lateinit var mActivity:
+open class BaseFragment : Fragment() {
+    private lateinit var mediaPlayer: MediaPlayer
 
-    fun playSong() {
-        val player = MediaPlayer()
-        player.stop()
-        player.reset()
-        // add song url here
-//        player.setDataSource()
-        player.prepare()
-        player.start()
+    fun playSong(musicUrl: String) {
+        mediaPlayer = MediaPlayer().apply {
+            stop()
+            reset()
+            setDataSource(musicUrl)
+            prepare()
+            start()
+        }
     }
 }

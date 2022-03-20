@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.R
+import com.emissa.apps.rockclassicpop.data.MusicItemClicked
 import com.emissa.apps.rockclassicpop.model.Classic
 import com.squareup.picasso.Picasso
 
@@ -14,8 +16,8 @@ import com.squareup.picasso.Picasso
  *
  */
 class ClassicAdapter(
+    private val classicSongClickListener: MusicItemClicked,
     private val classics: MutableList<Classic> = mutableListOf(),
-    private val classicSongClickListener: (Classic) -> Unit
 ) : RecyclerView.Adapter<ClassicViewHolder>() {
 
     fun updateClassicSongs(classicSongs: List<Classic>) {
@@ -41,7 +43,7 @@ class ClassicAdapter(
 
 class ClassicViewHolder(
     itemView: View,
-    private val itemClicked: (Classic) -> Unit
+    private val itemClicked: MusicItemClicked
 ): RecyclerView.ViewHolder(itemView) {
     /**
      * DATA TO LOAD:
@@ -59,9 +61,11 @@ class ClassicViewHolder(
 
 
     fun bind(musicItem: Classic) {
+        val price = musicItem.trackPrice.toString()
+
         classicTitle.text = musicItem.collectionName
         classicArtist.text = musicItem.artistName
-        classicPrice.text = musicItem.trackPrice.toString()
+        classicPrice.text = MusicApp.priceFormatted(price)
 
         Picasso.get()
             .load(musicItem.artworkUrl60)
@@ -71,7 +75,7 @@ class ClassicViewHolder(
             .into(classicImage)
 
         itemView.setOnClickListener {
-            itemClicked.invoke(musicItem)
+            itemClicked.onSongClicked(musicItem)
         }
     }
 

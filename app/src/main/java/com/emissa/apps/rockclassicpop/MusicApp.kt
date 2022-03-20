@@ -2,6 +2,8 @@ package com.emissa.apps.rockclassicpop
 
 import android.app.Application
 import com.emissa.apps.rockclassicpop.di.*
+import java.text.DecimalFormatSymbols
+import java.util.*
 
 class MusicApp : Application() {
 
@@ -12,9 +14,13 @@ class MusicApp : Application() {
             .builder()
             .applicationModule(ApplicationModule(this))
             .build()
+
     }
 
     companion object {
+        var priceFormatted = DecimalFormatSymbols(Locale.getDefault()).currencySymbol
         lateinit var musicsComponent: MusicsComponent
+
+        fun priceFormatted(price: String) = "$priceFormatted $price"
     }
 }

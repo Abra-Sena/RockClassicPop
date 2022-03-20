@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/margin_small">
+        android:layout_margin="@dimen/margin_medium">
 
         <ImageView
             android:id="@+id/music_photo"
@@ -32,17 +32,20 @@
             android:layout_toEndOf="@+id/music_photo"
             android:layout_alignParentTop="true"
             android:gravity="start"
-            android:text="@string/music_title" />
+            android:text="@string/music_title"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
 
         <TextView
             android:id="@+id/music_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/music_title"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_medium"
             android:layout_toEndOf="@+id/music_photo"
+            android:layout_toStartOf="@id/music_price"
             android:gravity="start"
-            android:text="@string/music_title" />
+            android:text="@string/music_title"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"/>
 
         <TextView
             android:id="@+id/music_price"
@@ -51,6 +54,7 @@
             android:layout_alignBaseline="@id/music_artist"
             android:layout_alignParentEnd="true"
             android:gravity="end"
-            android:text="@string/music_price" />
+            android:text="@string/music_price"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

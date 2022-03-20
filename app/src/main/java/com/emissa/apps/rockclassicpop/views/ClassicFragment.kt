@@ -1,6 +1,7 @@
 package com.emissa.apps.rockclassicpop.views
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,13 +10,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.adapter.ClassicAdapter
+import com.emissa.apps.rockclassicpop.data.MusicItemClicked
 import com.emissa.apps.rockclassicpop.databinding.FragmentClassicBinding
 import com.emissa.apps.rockclassicpop.model.Classic
 import com.emissa.apps.rockclassicpop.presenters.ClassicSongContract
 import com.emissa.apps.rockclassicpop.presenters.ClassicsPresenter
 import javax.inject.Inject
 
-class ClassicFragment : Fragment(), ClassicSongContract {
+class ClassicFragment : BaseFragment(), ClassicSongContract, MusicItemClicked {
 
     @Inject
     lateinit var presenter: ClassicsPresenter
@@ -23,9 +25,7 @@ class ClassicFragment : Fragment(), ClassicSongContract {
         FragmentClassicBinding.inflate(layoutInflater)
     }
     private val classicAdapter by lazy {
-       ClassicAdapter(classicSongClickListener = {
-           //call player method here
-       })
+       ClassicAdapter(this)
    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +50,7 @@ class ClassicFragment : Fragment(), ClassicSongContract {
         }
 
         presenter.checkNetworkConnection()
+
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -88,6 +89,11 @@ class ClassicFragment : Fragment(), ClassicSongContract {
             }
             .create()
             .show()
+    }
+
+    override fun <T : Any> onSongClicked(song: T) {
+//        val intent: Intent = Intent.parseIntent(Intent.ACTION_VIEW, )
+//        startActivity(intent)
     }
 
     companion object {

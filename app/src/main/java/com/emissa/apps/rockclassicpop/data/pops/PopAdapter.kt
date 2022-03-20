@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.R
 import com.emissa.apps.rockclassicpop.model.Pop
 import com.squareup.picasso.Picasso
@@ -56,9 +57,11 @@ class PopViewHolder(
 
 
     fun bind(musicItem: Pop) {
+        val price = musicItem.trackPrice.toString()
+
         popTitle.text = musicItem.collectionName
         popArtist.text = musicItem.artistName
-        popPrice.text = musicItem.trackPrice.toString()
+        popPrice.text = MusicApp.priceFormatted(price)
 
         Picasso.get()
             .load(musicItem.artworkUrl60)
