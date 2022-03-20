@@ -8,9 +8,9 @@ import dagger.Component
 
 @Component(
     modules = [
-        NetworkModule::class,
         ApplicationModule::class,
-        PresentersModule::class
+        PresentersModule::class,
+        NetworkModule::class
     ]
 )
 interface MusicsComponent {

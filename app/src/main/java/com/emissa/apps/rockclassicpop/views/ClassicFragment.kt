@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.emissa.apps.rockclassicpop.R
+import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.adapter.ClassicAdapter
 import com.emissa.apps.rockclassicpop.databinding.FragmentClassicBinding
-import com.emissa.apps.rockclassicpop.di.DaggerMusicsComponent
 import com.emissa.apps.rockclassicpop.model.Classic
 import com.emissa.apps.rockclassicpop.presenters.ClassicSongContract
 import com.emissa.apps.rockclassicpop.presenters.ClassicsPresenter
@@ -32,13 +31,15 @@ class ClassicFragment : Fragment(), ClassicSongContract {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // injecting the component
-        DaggerMusicsComponent.create().inject(this)
+        MusicApp.musicsComponent.inject(this)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        presenter.initializePresenter(this)
+
         binding.classicRecyclerView.apply {
             layoutManager =  LinearLayoutManager(
                 requireContext(),
@@ -50,7 +51,7 @@ class ClassicFragment : Fragment(), ClassicSongContract {
 
         presenter.checkNetworkConnection()
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_classic, container, false)
+        return binding.root
     }
 
     override fun onResume() {

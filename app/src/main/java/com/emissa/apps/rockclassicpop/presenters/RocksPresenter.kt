@@ -1,14 +1,19 @@
 package com.emissa.apps.rockclassicpop.presenters
 
+import android.util.Log
+import com.emissa.apps.rockclassicpop.data.rocks.RockDatabaseRepository
 import com.emissa.apps.rockclassicpop.model.Rock
 import com.emissa.apps.rockclassicpop.rest.RocksRepository
+import com.emissa.apps.rockclassicpop.utils.NetworkMonitor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class RocksPresenterImpl @Inject constructor(
+    private val rockDatabaseRepo: RockDatabaseRepository,
     private val rocksRepository: RocksRepository,
+    private val networkMonitor: NetworkMonitor,
     private val disposables: CompositeDisposable
 ) : RocksPresenter {
     private var rockSongContract: RockSongContract? = null
@@ -18,27 +23,76 @@ class RocksPresenterImpl @Inject constructor(
     }
 
     override fun checkNetworkConnection() {
-        // not operable
+        networkMonitor.registerNetworkMonitor()
     }
 
     override fun getRockMusics() {
         rockSongContract?.loadingRockSongs(true)
+
         //Get responses from API call
-        rocksRepository.getRockSongs()
+        networkMonitor.networkState
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { rockRes -> rockSongContract?.rockSongsOnSuccess(rockRes.rocks)},
-                { error -> rockSongContract?.rockSongsOnError(error) }
+                { networkState ->
+                    if (networkState) {
+                        retrieveSongsViaNetwork()
+                    } else {
+                        // handle offline data retrieve here
+                        Log.d("Classic Presenter Impl", "Issue with network state, it is: $networkState")
+                    }
+                },
+                { error ->
+                    rockSongContract?.rockSongsOnError(error)
+                }
             )
             .apply {
-                disposables.addAll(this)
+                disposables.add(this)
             }
     }
 
     override fun destroyPresenter() {
         rockSongContract = null
         disposables.dispose() //clear()
+    }
+
+    private fun retrieveSongsViaNetwork() {
+        rocksRepository.getRockSongs()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { rockRes -> saveRetrievedSongs(rockRes.rocks) },
+                { error -> rockSongContract?.rockSongsOnError(error) }
+            )
+            .apply {
+                disposables.add(this)
+            }
+    }
+
+    private fun saveRetrievedSongs(rocks: List<Rock>) {
+        rockDatabaseRepo.insertAllSongs(rocks)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { retrieveFromDatabase() },
+                { Log.e("Classic Presenter Impl", "Error saving retrieved songs, $it.toString()") }
+            )
+            .apply {
+                disposables.add(this)
+            }
+    }
+
+    private fun retrieveFromDatabase() {
+        rockDatabaseRepo.getAll()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { rockRes -> rockSongContract?.rockSongsOnSuccess(rockRes) },
+                { error -> rockSongContract?.rockSongsOnError(error) }
+            )
+            .apply {
+                disposables.add(this)
+            }
     }
 }
 

@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.emissa.apps.rockclassicpop.model.Pop
 import com.emissa.apps.rockclassicpop.model.Rock
+import io.reactivex.Completable
 import io.reactivex.Single
 
 @Dao
@@ -19,6 +20,9 @@ interface RocksDao {
     @Query("SELECT * from rock WHERE collectionName = :title")
     fun getSong(title: String) : Single<Rock>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertSong(rock: Rock)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertSong(rock: Rock) : Completable
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllSongs(rock: List<Rock>) : Completable
 }

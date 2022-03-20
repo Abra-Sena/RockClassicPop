@@ -6,12 +6,13 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import io.reactivex.subjects.BehaviorSubject
+import javax.inject.Inject
 
 object NetworkState {
     val observeNetworkState: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
 }
 
-class NetworkMonitor(
+class NetworkMonitor @Inject constructor(
     private var context: Context?,
     private val networkRequest: NetworkRequest = NetworkRequest.Builder()
         .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -19,6 +20,9 @@ class NetworkMonitor(
     private val connectivityManager: ConnectivityManager =
         context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 ) : ConnectivityManager.NetworkCallback() {
+
+    val networkState: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(isNetworkAvailable())
+
     private fun isNetworkAvailable(): Boolean {
         connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)?.let {
             if (it.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||

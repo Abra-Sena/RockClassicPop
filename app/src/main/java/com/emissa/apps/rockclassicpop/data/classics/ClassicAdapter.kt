@@ -68,8 +68,7 @@ class ClassicViewHolder(
             .load(musicItem.artworkUrl60)
             .placeholder(R.drawable.ic_baseline_camera_loading)
             .error(R.drawable.ic_baseline_broken_image_error)
-            .resize(250, 250)
-//            .fit()
+            .fit()
             .into(classicImage)
 
         itemView.setOnClickListener {

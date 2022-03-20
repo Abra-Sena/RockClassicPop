@@ -1,5 +1,6 @@
 package com.emissa.apps.rockclassicpop.di
 
+import android.util.Log
 import com.emissa.apps.rockclassicpop.rest.*
 import com.google.gson.Gson
 import dagger.Module
@@ -18,6 +19,7 @@ class NetworkModule {
 
     @Provides
     fun provideLoggingInterceptor() = HttpLoggingInterceptor().apply {
+        Log.d("Network module", "Providing logging interceptor")
         level = HttpLoggingInterceptor.Level.BODY
     }
 
@@ -29,6 +31,7 @@ class NetworkModule {
         musicRequestInterceptor: MusicRequestInterceptor,
         loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
+        Log.d("Network module", "Providing Ok Http client")
         return OkHttpClient.Builder()
             .addInterceptor(musicRequestInterceptor)
             .addInterceptor(loggingInterceptor)
@@ -40,6 +43,7 @@ class NetworkModule {
 
     @Provides
     fun provideRetrofitService(okHttpClient: OkHttpClient, gson: Gson) : MusicApi {
+        Log.d("Network module", "Providing Retrofit")
         return Retrofit.Builder()
             .baseUrl(MusicApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
@@ -51,14 +55,17 @@ class NetworkModule {
 
     @Provides
     fun provideClassicsRepository(musicApi: MusicApi): ClassicsRepository {
+        Log.d("Network module", "Providing classic songs repository")
         return ClassicsRepositoryImpl(musicApi)
     }
     @Provides
     fun provideRocksRepository(musicApi: MusicApi): RocksRepository {
+        Log.d("Network module", "Providing rock songs repository")
         return RocksRepositoryImpl(musicApi)
     }
     @Provides
     fun providePopsRepository(musicApi: MusicApi): PopsRepository {
+        Log.d("Network module", "Providing pop songs repository")
         return PopsRepositoryImpl(musicApi)
     }
 }

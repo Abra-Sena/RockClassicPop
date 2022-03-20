@@ -1,6 +1,5 @@
 package com.emissa.apps.rockclassicpop.rest
 
-import com.emissa.apps.rockclassicpop.model.ClassicSongs
 import com.emissa.apps.rockclassicpop.model.RockSongs
 import io.reactivex.Single
 import javax.inject.Inject
