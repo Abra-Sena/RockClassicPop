@@ -1,9 +1,7 @@
 package com.emissa.apps.rockclassicpop.views
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -91,12 +89,12 @@ class ClassicFragment : BaseFragment(), ClassicSongContract, MusicItemClicked {
             .show()
     }
 
-    override fun <T : Any> onSongClicked(song: T) {
-//        val intent: Intent = Intent.parseIntent(Intent.ACTION_VIEW, )
-//        startActivity(intent)
-    }
 
     companion object {
         fun newInstance() = ClassicFragment()
+    }
+
+    override fun onSongClicked(musicUrl: String) {
+        playSong(musicUrl)
     }
 }

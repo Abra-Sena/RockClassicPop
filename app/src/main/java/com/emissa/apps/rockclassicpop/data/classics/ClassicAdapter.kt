@@ -75,7 +75,7 @@ class ClassicViewHolder(
             .into(classicImage)
 
         itemView.setOnClickListener {
-            itemClicked.onSongClicked(musicItem)
+            musicItem.previewUrl?.let { it1 -> itemClicked.onSongClicked(it1) }
         }
     }
 
