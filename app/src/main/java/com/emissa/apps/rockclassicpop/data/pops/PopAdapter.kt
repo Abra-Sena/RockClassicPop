@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.emissa.apps.rockclassicpop.R
 import com.emissa.apps.rockclassicpop.model.Pop
-import com.emissa.apps.rockclassicpop.model.PopSongs
 import com.squareup.picasso.Picasso
 
 class PopAdapter(
@@ -65,8 +64,7 @@ class PopViewHolder(
             .load(musicItem.artworkUrl60)
             .placeholder(R.drawable.ic_baseline_camera_loading)
             .error(R.drawable.ic_baseline_broken_image_error)
-            .resize(250, 250)
-//            .fit()
+            .fit()
             .into(popImage)
 
         itemView.setOnClickListener {

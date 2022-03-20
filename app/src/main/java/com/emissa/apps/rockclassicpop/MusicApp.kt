@@ -11,8 +11,6 @@ class MusicApp : Application() {
         musicsComponent = DaggerMusicsComponent
             .builder()
             .applicationModule(ApplicationModule(this))
-            .presentersModule(PresentersModule())
-            .networkModule(NetworkModule())
             .build()
     }
 

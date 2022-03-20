@@ -9,8 +9,12 @@ import com.emissa.apps.rockclassicpop.data.classics.ClassicDatabaseRepository
 import com.emissa.apps.rockclassicpop.data.classics.ClassicDatabaseRepositoryImpl
 import com.emissa.apps.rockclassicpop.data.classics.ClassicsDao
 import com.emissa.apps.rockclassicpop.data.classics.ClassicsDatabase
+import com.emissa.apps.rockclassicpop.data.pops.PopDatabaseRepository
+import com.emissa.apps.rockclassicpop.data.pops.PopDatabaseRepositoryImpl
 import com.emissa.apps.rockclassicpop.data.pops.PopsDao
 import com.emissa.apps.rockclassicpop.data.pops.PopsDatabase
+import com.emissa.apps.rockclassicpop.data.rocks.RockDatabaseRepository
+import com.emissa.apps.rockclassicpop.data.rocks.RockDatabaseRepositoryImpl
 import com.emissa.apps.rockclassicpop.data.rocks.RocksDao
 import com.emissa.apps.rockclassicpop.data.rocks.RocksDatabase
 import dagger.Module
@@ -63,8 +67,13 @@ class ApplicationModule(
         dao: ClassicsDao
     ) : ClassicDatabaseRepository = ClassicDatabaseRepositoryImpl(dao)
 
-//    @Provides
-//    fun
-//    @Provides
-//    fun
+    @Provides
+    fun providePopDataRepo(
+        dao: PopsDao
+    ) : PopDatabaseRepository = PopDatabaseRepositoryImpl(dao)
+
+    @Provides
+    fun provideRockDataRepo(
+        dao: RocksDao
+    ) : RockDatabaseRepository = RockDatabaseRepositoryImpl(dao)
 }

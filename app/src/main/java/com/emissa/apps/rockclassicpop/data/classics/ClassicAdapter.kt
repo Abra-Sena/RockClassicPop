@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.emissa.apps.rockclassicpop.R
 import com.emissa.apps.rockclassicpop.model.Classic
-import com.emissa.apps.rockclassicpop.model.ClassicSongs
 import com.squareup.picasso.Picasso
 
 /**

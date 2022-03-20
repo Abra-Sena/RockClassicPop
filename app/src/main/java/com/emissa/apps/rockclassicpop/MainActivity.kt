@@ -16,14 +16,12 @@ class MainActivity : AppCompatActivity() {
 //    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
     private lateinit var bottomNavBar: BottomNavigationView
-//    private var mBinding: ActivityMainBinding? = null
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         MusicApp.musicsComponent.inject(this)
