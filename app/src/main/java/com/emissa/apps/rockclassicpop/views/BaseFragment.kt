@@ -8,11 +8,9 @@ open class BaseFragment : Fragment() {
 
     fun playSong(musicUrl: String) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(musicUrl)
+            setDataAndType(Uri.parse(musicUrl), "audio/*")
         }
 
-        if (intent.resolveActivity(requireActivity().packageManager) != null) {
-            startActivity(intent)
-        }
+        startActivity(intent)
     }
 }

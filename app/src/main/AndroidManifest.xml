@@ -21,17 +21,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <!--Can't figure out which intent scheme to use-->
-<!--            <intent-filter >-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <data android:scheme=""-->
-<!--                <data android:mimeType="audio/*" />-->
-<!--                <data android:mimeType="video/*" />-->
-<!--                <data android:mimeType="application/ogg" />-->
-<!--                <data android:mimeType="application/itunes" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
         </activity>
     </application>
 

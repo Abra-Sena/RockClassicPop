@@ -15,4 +15,5 @@
     <dimen name="card_elevation_margin">2dp</dimen>
     <dimen name="card_corner_radius">12dp</dimen>
     <dimen name="card_elevation">5dp</dimen>
+    <dimen name="spinner_size">72dp</dimen>
 </resources>

@@ -6,7 +6,7 @@
 
     <string name="uri_scheme_file"></string>
     <string name="uri_scheme_content"></string>
-    <string name="uri_scheme_http"></string>
+    <string name="uri_scheme_http">http</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="classic_musics">Classic Musics</string>

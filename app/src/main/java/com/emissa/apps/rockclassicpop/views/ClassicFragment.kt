@@ -89,12 +89,11 @@ class ClassicFragment : BaseFragment(), ClassicSongContract, MusicItemClicked {
             .show()
     }
 
+    override fun onSongClicked(musicUrl: String) {
+        playSong(musicUrl)
+    }
 
     companion object {
         fun newInstance() = ClassicFragment()
-    }
-
-    override fun onSongClicked(musicUrl: String) {
-        playSong(musicUrl)
     }
 }

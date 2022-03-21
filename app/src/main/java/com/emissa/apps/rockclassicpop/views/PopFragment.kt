@@ -9,13 +9,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.adapter.PopAdapter
+import com.emissa.apps.rockclassicpop.data.MusicItemClicked
 import com.emissa.apps.rockclassicpop.databinding.FragmentPopBinding
 import com.emissa.apps.rockclassicpop.model.Pop
 import com.emissa.apps.rockclassicpop.presenters.PopSongContract
 import com.emissa.apps.rockclassicpop.presenters.PopsPresenter
 import javax.inject.Inject
 
-class PopFragment : Fragment(), PopSongContract {
+class PopFragment : BaseFragment(), PopSongContract, MusicItemClicked {
 
     @Inject
     lateinit var presenter: PopsPresenter
@@ -23,9 +24,7 @@ class PopFragment : Fragment(), PopSongContract {
         FragmentPopBinding.inflate(layoutInflater)
     }
     private val popAdapter by lazy {
-        PopAdapter(popSongClickListener = {
-            // call player method here
-        })
+        PopAdapter(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,5 +91,9 @@ class PopFragment : Fragment(), PopSongContract {
 
     companion object {
         fun newInstance() = PopFragment()
+    }
+
+    override fun onSongClicked(musicUrl: String) {
+        playSong(musicUrl)
     }
 }

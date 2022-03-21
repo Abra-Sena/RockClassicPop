@@ -8,12 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.R
+import com.emissa.apps.rockclassicpop.data.MusicItemClicked
 import com.emissa.apps.rockclassicpop.model.Pop
 import com.squareup.picasso.Picasso
 
 class PopAdapter(
-    private val pops: MutableList<Pop> = mutableListOf(),
-    private val popSongClickListener: (Pop) -> Unit
+    private val popSongClickListener: MusicItemClicked,
+    private val pops: MutableList<Pop> = mutableListOf()
 ) : RecyclerView.Adapter<PopViewHolder>() {
 
     fun updatePopSongs(popSongs: List<Pop>) {
@@ -39,7 +40,7 @@ class PopAdapter(
 
 class PopViewHolder(
     itemView: View,
-    private val itemClicked: (Pop) -> Unit
+    private val itemClicked: MusicItemClicked
 ): RecyclerView.ViewHolder(itemView) {
     /**
      * DATA TO LOAD:
@@ -71,7 +72,7 @@ class PopViewHolder(
             .into(popImage)
 
         itemView.setOnClickListener {
-            itemClicked.invoke(musicItem)
+            musicItem.previewUrl?.let { it1 -> itemClicked.onSongClicked(it1) }
         }
     }
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.adapter.RockAdapter
+import com.emissa.apps.rockclassicpop.data.MusicItemClicked
 import com.emissa.apps.rockclassicpop.databinding.FragmentRockBinding
 import com.emissa.apps.rockclassicpop.model.Rock
 import com.emissa.apps.rockclassicpop.presenters.RockSongContract
@@ -16,7 +17,7 @@ import com.emissa.apps.rockclassicpop.presenters.RocksPresenter
 import javax.inject.Inject
 
 
-class RockFragment : Fragment(), RockSongContract {
+class RockFragment : BaseFragment(), RockSongContract, MusicItemClicked {
 
     @Inject
     lateinit var presenter: RocksPresenter
@@ -24,9 +25,7 @@ class RockFragment : Fragment(), RockSongContract {
         FragmentRockBinding.inflate(layoutInflater)
     }
     private val rockAdapter by lazy {
-        RockAdapter(rockSongClickListener = {
-            //call player method here
-        })
+        RockAdapter(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,12 +64,6 @@ class RockFragment : Fragment(), RockSongContract {
         presenter.destroyPresenter()
     }
 
-
-
-    companion object {
-        fun newInstance() = RockFragment()
-    }
-
     override fun loadingRockSongs(isLoading: Boolean) {
         binding.rockRecyclerView.visibility = View.GONE
         binding.progressBarRock.visibility = View.VISIBLE
@@ -95,4 +88,13 @@ class RockFragment : Fragment(), RockSongContract {
             .create()
             .show()
     }
+
+    override fun onSongClicked(musicUrl: String) {
+        playSong(musicUrl)
+    }
+
+    companion object {
+        fun newInstance() = RockFragment()
+    }
+
 }

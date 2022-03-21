@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.R
+import com.emissa.apps.rockclassicpop.data.MusicItemClicked
 import com.emissa.apps.rockclassicpop.model.Pop
 import com.emissa.apps.rockclassicpop.model.PopSongs
 import com.emissa.apps.rockclassicpop.model.Rock
@@ -15,8 +16,8 @@ import com.emissa.apps.rockclassicpop.model.RockSongs
 import com.squareup.picasso.Picasso
 
 class RockAdapter(
-    private val rocks: MutableList<Rock> = mutableListOf(),
-    private val rockSongClickListener: (Rock) -> Unit
+    private val rockSongClickListener: MusicItemClicked,
+    private val rocks: MutableList<Rock> = mutableListOf()
 ) : RecyclerView.Adapter<RockViewHolder>() {
 
     fun updatePopSongs(rockSongs: List<Rock>) {
@@ -41,7 +42,7 @@ class RockAdapter(
 
 class RockViewHolder(
     itemView: View,
-    private val itemClicked: (Rock) -> Unit
+    private val itemClicked: MusicItemClicked
 ): RecyclerView.ViewHolder(itemView) {
     /**
      * DATA TO LOAD:
@@ -74,7 +75,7 @@ class RockViewHolder(
             .into(rockImage)
 
         itemView.setOnClickListener {
-            itemClicked.invoke(musicItem)
+            musicItem.previewUrl?.let { it1 -> itemClicked.onSongClicked(it1) }
         }
     }
 }

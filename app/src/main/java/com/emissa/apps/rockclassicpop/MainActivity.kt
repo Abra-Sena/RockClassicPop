@@ -6,14 +6,12 @@ import android.os.Bundle
 import android.view.Menu
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.emissa.apps.rockclassicpop.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-//    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
     private lateinit var bottomNavBar: BottomNavigationView
     private val binding by lazy {
@@ -27,11 +25,7 @@ class MainActivity : AppCompatActivity() {
         MusicApp.musicsComponent.inject(this)
 
         bottomNavBar = binding.bottomNav
-
         navController = findNavController(R.id.main_frag_container)
-//        setupActionBarWithNavController(navController)
-//        appBarConfiguration = AppBarConfiguration(navController.graph)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
         bottomNavBar.setupWithNavController(navController)
     }
 
