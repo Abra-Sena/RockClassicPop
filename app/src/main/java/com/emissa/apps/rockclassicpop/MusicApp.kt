@@ -15,6 +15,7 @@ class MusicApp : Application() {
             .applicationModule(ApplicationModule(this))
             .build()
 
+        // refresh listener to trigger new songs
     }
 
     companion object {
@@ -22,5 +23,6 @@ class MusicApp : Application() {
         lateinit var musicsComponent: MusicsComponent
 
         fun priceFormatted(price: String) = "$priceFormatted $price"
+
     }
 }

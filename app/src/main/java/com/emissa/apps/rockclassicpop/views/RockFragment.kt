@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.adapter.RockAdapter
@@ -57,6 +58,19 @@ class RockFragment : BaseFragment(), RockSongContract, MusicItemClicked {
     override fun onResume() {
         super.onResume()
         presenter.getRockMusics()
+        // handles swipe to refresh to load more data
+        binding.swipeRefreshRock.apply {
+            setColorSchemeResources(
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_purple,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_red_dark,
+            )
+            setOnRefreshListener {
+                presenter.getRockMusics()
+                binding.swipeRefreshRock.isRefreshing = false
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -69,24 +83,26 @@ class RockFragment : BaseFragment(), RockSongContract, MusicItemClicked {
         binding.progressBarRock.visibility = View.VISIBLE
     }
 
+    override fun loadSongsOffline(rocks: List<Rock>) {
+        binding.rockRecyclerView.visibility = View.VISIBLE
+        binding.progressBarRock.visibility = View.GONE
+        rockAdapter.updatePopSongs(rocks)
+        toastMessageOffline(rockAdapter.itemCount, "Rock")
+        binding.swipeRefreshRock.isRefreshing = false
+    }
+
     override fun rockSongsOnSuccess(rocks: List<Rock>) {
         binding.progressBarRock.visibility = View.GONE
         binding.rockRecyclerView.visibility = View.VISIBLE
         rockAdapter.updatePopSongs(rocks)
+        toastMessageOnFetch(rocks.size)
     }
 
     override fun rockSongsOnError(error: Throwable) {
         binding.rockRecyclerView.visibility = View.GONE
         binding.progressBarRock.visibility = View.GONE
 
-        AlertDialog.Builder(requireContext())
-            .setTitle("An Error Occurred!")
-            .setMessage(error.localizedMessage)
-            .setPositiveButton("DISMISS") { dialogInterface, i ->
-                dialogInterface.dismiss()
-            }
-            .create()
-            .show()
+        showAlertDialog(error)
     }
 
     override fun onSongClicked(musicUrl: String) {

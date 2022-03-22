@@ -1,9 +1,7 @@
 package com.emissa.apps.rockclassicpop.presenters
 
-import android.util.Log
 import com.emissa.apps.rockclassicpop.data.pops.PopDatabaseRepository
 import com.emissa.apps.rockclassicpop.model.Pop
-import com.emissa.apps.rockclassicpop.model.Rock
 import com.emissa.apps.rockclassicpop.rest.PopsRepository
 import com.emissa.apps.rockclassicpop.utils.NetworkMonitor
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,10 +38,11 @@ class PopsPresenterImpl @Inject constructor(
                         retrieveSongsViaNetwork()
                     } else {
                         // handle offline data retrieve here
-                        Log.d("Pop Presenter Impl", "Issue with network state, it is: $networkState")
+                        retrieveFromDatabaseOffline()
                     }
                 },
                 { error ->
+                    retrieveFromDatabaseOffline()
                     popSongContract?.popSongsOnError(error)
                 }
             )
@@ -54,7 +53,7 @@ class PopsPresenterImpl @Inject constructor(
 
     override fun destroyPresenter() {
         popSongContract = null
-        disposables.dispose() //clear()
+        disposables.clear()
     }
 
     private fun retrieveSongsViaNetwork() {
@@ -62,8 +61,13 @@ class PopsPresenterImpl @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { popRes -> saveRetrievedSongs(popRes.pops) },
-                { error -> popSongContract?.popSongsOnError(error) }
+                { popRes ->
+                    saveRetrievedSongs(popRes.pops)
+                },
+                { error ->
+                    retrieveFromDatabaseOffline()
+                    popSongContract?.popSongsOnError(error)
+                }
             )
             .apply {
                 disposables.add(this)
@@ -74,10 +78,7 @@ class PopsPresenterImpl @Inject constructor(
         popDatabaseRepo.insertAllSongs(pops)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { retrieveFromDatabase() },
-                { Log.e("Pop Presenter Impl", "Error saving retrieved songs, $it.toString()") }
-            )
+            .subscribe { retrieveFromDatabase() }
             .apply {
                 disposables.add(this)
             }
@@ -95,6 +96,19 @@ class PopsPresenterImpl @Inject constructor(
                 disposables.add(this)
             }
     }
+
+    private fun retrieveFromDatabaseOffline() {
+        popDatabaseRepo.getAll()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { popsRes -> popSongContract?.loadSongsOffline(popsRes) },
+                { error -> popSongContract?.popSongsOnError(error) }
+            )
+            .apply {
+                disposables.add(this)
+            }
+    }
 }
 
 interface PopsPresenter {
@@ -106,6 +120,7 @@ interface PopsPresenter {
 
 interface PopSongContract {
     fun loadingPopSongs(isLoading: Boolean)
+    fun loadSongsOffline(pops: List<Pop>)
     fun popSongsOnSuccess(pops: List<Pop>)
     fun popSongsOnError(error: Throwable)
 }

@@ -2,7 +2,6 @@ package com.emissa.apps.rockclassicpop.views
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +56,19 @@ class PopFragment : BaseFragment(), PopSongContract, MusicItemClicked {
     override fun onResume() {
         super.onResume()
         presenter.getPopMusics()
+        // handles swipe to refresh to load more data
+        binding.swipeRefreshPop.apply {
+            setColorSchemeResources(
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_purple,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_red_dark,
+            )
+            setOnRefreshListener {
+                presenter.getPopMusics()
+                binding.swipeRefreshPop.isRefreshing = false
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -69,24 +81,26 @@ class PopFragment : BaseFragment(), PopSongContract, MusicItemClicked {
         binding.progressBarPop.visibility = View.VISIBLE
     }
 
+    override fun loadSongsOffline(pops: List<Pop>) {
+        binding.popRecyclerView.visibility = View.VISIBLE
+        binding.progressBarPop.visibility = View.GONE
+        popAdapter.updatePopSongs(pops)
+        toastMessageOffline(popAdapter.itemCount, "Pop")
+        binding.swipeRefreshPop.isRefreshing = false
+    }
+
     override fun popSongsOnSuccess(pops: List<Pop>) {
         binding.progressBarPop.visibility = View.GONE
         binding.popRecyclerView.visibility = View.VISIBLE
         popAdapter.updatePopSongs(pops)
+        toastMessageOnFetch(pops.size)
     }
 
     override fun popSongsOnError(error: Throwable) {
         binding.popRecyclerView.visibility = View.GONE
         binding.progressBarPop.visibility = View.GONE
 
-        AlertDialog.Builder(requireContext())
-            .setTitle("An Error Occurred!")
-            .setMessage(error.localizedMessage)
-            .setPositiveButton("DISMISS") { dialogInterface, i ->
-                dialogInterface.dismiss()
-            }
-            .create()
-            .show()
+        showAlertDialog(error)
     }
 
     companion object {

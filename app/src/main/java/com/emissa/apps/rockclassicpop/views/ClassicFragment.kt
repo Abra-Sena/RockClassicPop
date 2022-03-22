@@ -1,6 +1,5 @@
 package com.emissa.apps.rockclassicpop.views
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +14,13 @@ import com.emissa.apps.rockclassicpop.presenters.ClassicSongContract
 import com.emissa.apps.rockclassicpop.presenters.ClassicsPresenter
 import javax.inject.Inject
 
+
 class ClassicFragment : BaseFragment(), ClassicSongContract, MusicItemClicked {
 
+    /**
+     * this is bugging a little while fetching data
+     * when app leaves 'offline mode' to 'online mode'
+     */
     @Inject
     lateinit var presenter: ClassicsPresenter
     private val binding by lazy {
@@ -56,7 +60,19 @@ class ClassicFragment : BaseFragment(), ClassicSongContract, MusicItemClicked {
     override fun onResume() {
         super.onResume()
         presenter.getClassicMusics()
-        // implement swipe to refresh here
+        // handles swipe to refresh to load more data
+        binding.swipeRefreshClassic.apply {
+            setColorSchemeResources(
+                android.R.color.holo_blue_dark,
+                android.R.color.holo_purple,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_red_dark,
+            )
+            setOnRefreshListener {
+                presenter.getClassicMusics()
+                binding.swipeRefreshClassic.isRefreshing = false
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -69,24 +85,26 @@ class ClassicFragment : BaseFragment(), ClassicSongContract, MusicItemClicked {
         binding.progressBarChar.visibility = View.VISIBLE
     }
 
+    override fun loadSongsOffline(classics: List<Classic>) {
+        binding.classicRecyclerView.visibility = View.VISIBLE
+        binding.progressBarChar.visibility = View.GONE
+        classicAdapter.updateClassicSongs(classics)
+        toastMessageOffline(classicAdapter.itemCount, "Classic")
+        binding.swipeRefreshClassic.isRefreshing = false
+    }
+
     override fun classicSongsOnSuccess(classics: List<Classic>) {
         binding.progressBarChar.visibility = View.GONE
         binding.classicRecyclerView.visibility = View.VISIBLE
         classicAdapter.updateClassicSongs(classics)
+        toastMessageOnFetch(classics.size)
     }
 
     override fun classicSongsOnError(error: Throwable) {
         binding.classicRecyclerView.visibility = View.GONE
         binding.progressBarChar.visibility = View.GONE
 
-        AlertDialog.Builder(requireContext())
-            .setTitle("An Error Occurred!")
-            .setMessage(error.localizedMessage)
-            .setPositiveButton("DISMISS") { dialogInterface, i ->
-                dialogInterface.dismiss()
-            }
-            .create()
-            .show()
+        showAlertDialog(error)
     }
 
     override fun onSongClicked(musicUrl: String) {

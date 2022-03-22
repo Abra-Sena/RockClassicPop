@@ -1,6 +1,5 @@
 package com.emissa.apps.rockclassicpop.presenters
 
-import android.util.Log
 import com.emissa.apps.rockclassicpop.data.rocks.RockDatabaseRepository
 import com.emissa.apps.rockclassicpop.model.Rock
 import com.emissa.apps.rockclassicpop.rest.RocksRepository
@@ -39,10 +38,11 @@ class RocksPresenterImpl @Inject constructor(
                         retrieveSongsViaNetwork()
                     } else {
                         // handle offline data retrieve here
-                        Log.d("Classic Presenter Impl", "Issue with network state, it is: $networkState")
+                        retrieveFromDatabaseOffline()
                     }
                 },
                 { error ->
+                    retrieveFromDatabaseOffline()
                     rockSongContract?.rockSongsOnError(error)
                 }
             )
@@ -53,7 +53,7 @@ class RocksPresenterImpl @Inject constructor(
 
     override fun destroyPresenter() {
         rockSongContract = null
-        disposables.dispose() //clear()
+        disposables.clear() //clear()
     }
 
     private fun retrieveSongsViaNetwork() {
@@ -61,8 +61,13 @@ class RocksPresenterImpl @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { rockRes -> saveRetrievedSongs(rockRes.rocks) },
-                { error -> rockSongContract?.rockSongsOnError(error) }
+                { rockRes ->
+                    saveRetrievedSongs(rockRes.rocks)
+                },
+                { error ->
+                    retrieveFromDatabaseOffline()
+                    rockSongContract?.rockSongsOnError(error)
+                }
             )
             .apply {
                 disposables.add(this)
@@ -73,10 +78,7 @@ class RocksPresenterImpl @Inject constructor(
         rockDatabaseRepo.insertAllSongs(rocks)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { retrieveFromDatabase() },
-                { Log.e("Classic Presenter Impl", "Error saving retrieved songs, $it.toString()") }
-            )
+            .subscribe { retrieveFromDatabase() }
             .apply {
                 disposables.add(this)
             }
@@ -94,6 +96,19 @@ class RocksPresenterImpl @Inject constructor(
                 disposables.add(this)
             }
     }
+
+    private fun retrieveFromDatabaseOffline() {
+        rockDatabaseRepo.getAll()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { rockRes -> rockSongContract?.loadSongsOffline(rockRes) },
+                { error -> rockSongContract?.rockSongsOnError(error) }
+            )
+            .apply {
+                disposables.add(this)
+            }
+    }
 }
 
 interface RocksPresenter {
@@ -105,6 +120,7 @@ interface RocksPresenter {
 
 interface RockSongContract {
     fun loadingRockSongs(isLoading: Boolean)
+    fun loadSongsOffline(rocks: List<Rock>)
     fun rockSongsOnSuccess(rocks: List<Rock>)
     fun rockSongsOnError(error: Throwable)
 }

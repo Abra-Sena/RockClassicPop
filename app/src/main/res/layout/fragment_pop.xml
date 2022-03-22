@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:indeterminate="true"
-        app:indicatorColor="@color/pink"
+        app:indicatorColor="@color/purple_500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,17 +21,23 @@
         app:showAnimationBehavior="inward"
         app:showDelay="@integer/material_motion_duration_long_1"
         app:indicatorSize="@dimen/spinner_size"
-        app:trackColor="@color/primary_dark"
+        app:trackColor="@color/my_blue"
         app:trackCornerRadius="@dimen/margin_small"
         app:trackThickness="@dimen/margin_small" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/pop_recycler_view"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_pop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pop_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
