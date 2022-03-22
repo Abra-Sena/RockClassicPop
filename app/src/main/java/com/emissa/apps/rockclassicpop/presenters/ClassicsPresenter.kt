@@ -9,6 +9,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+
+/**
+ * Constructor injection to implement the presenter of Classic songs
+ */
 class ClassicsPresenterImpl @Inject constructor(
     private val classDatabaseRepo: ClassicDatabaseRepository,
     private val classicRepository: ClassicsRepository,
@@ -17,14 +21,25 @@ class ClassicsPresenterImpl @Inject constructor(
 ) : ClassicsPresenter {
     private var classicSongContract: ClassicSongContract? = null
 
+    /**
+     * Initialize Classic songs presenter
+     */
     override fun initializePresenter(viewContract: ClassicSongContract) {
         classicSongContract = viewContract
     }
 
+    /**
+     * Checks network/internet availability
+     */
     override fun checkNetworkConnection() {
         networkMonitor.registerNetworkMonitor()
     }
 
+    /**
+     * Returns rock songs
+     * Fetch data from server if network is available
+     * Retrieve data saved to database otherwise
+     */
     override fun getClassicMusics() {
         classicSongContract?.loadingClassicSongs(true)
         // Get responses from API call
@@ -50,11 +65,17 @@ class ClassicsPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Destroys the presenter
+     */
     override fun destroyPresenter() {
         classicSongContract = null
         disposables.clear()
     }
 
+    /**
+     * Retrieves data
+     */
     private fun retrieveSongsViaNetwork() {
         classicRepository.getClassicSongs()
             .subscribeOn(Schedulers.io())
@@ -72,6 +93,10 @@ class ClassicsPresenterImpl @Inject constructor(
                 disposables.add(this)
             }
     }
+
+    /**
+     * Save data saved to database
+     */
     private fun saveRetrievedSongs(classics: List<Classic>) {
         classDatabaseRepo.insertAllSongs(classics)
             .subscribeOn(Schedulers.io())
@@ -82,6 +107,9 @@ class ClassicsPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Retrieves data saved to database
+     */
     private fun retrieveFromDatabase() {
         classDatabaseRepo.getAll()
             .subscribeOn(Schedulers.io())
@@ -95,6 +123,9 @@ class ClassicsPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Retrieves data saved to database while offline
+     */
     private fun retrieveFromDatabaseOffline() {
         classDatabaseRepo.getAll()
             .subscribeOn(Schedulers.io())
@@ -109,6 +140,9 @@ class ClassicsPresenterImpl @Inject constructor(
     }
 }
 
+/**
+ * Interface to present view for Classic songs
+ */
 interface ClassicsPresenter {
     fun initializePresenter(viewContract: ClassicSongContract)
     fun checkNetworkConnection()

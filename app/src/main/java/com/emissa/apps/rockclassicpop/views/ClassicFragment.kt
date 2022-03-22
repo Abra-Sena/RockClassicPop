@@ -91,6 +91,7 @@ class ClassicFragment : BaseFragment(), ClassicSongContract, MusicItemClicked {
         classicAdapter.updateClassicSongs(classics)
         toastMessageOffline(classicAdapter.itemCount, "Classic")
         binding.swipeRefreshClassic.isRefreshing = false
+        showNoInternetAlertDialog()
     }
 
     override fun classicSongsOnSuccess(classics: List<Classic>) {
@@ -103,8 +104,7 @@ class ClassicFragment : BaseFragment(), ClassicSongContract, MusicItemClicked {
     override fun classicSongsOnError(error: Throwable) {
         binding.classicRecyclerView.visibility = View.GONE
         binding.progressBarChar.visibility = View.GONE
-
-        showAlertDialog(error)
+        showErrorAlertDialog(error)
     }
 
     override fun onSongClicked(musicUrl: String) {

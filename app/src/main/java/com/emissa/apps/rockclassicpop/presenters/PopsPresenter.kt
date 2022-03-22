@@ -9,6 +9,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+
+/**
+ * Constructor injection to implement the presenter of Classic songs
+ */
 class PopsPresenterImpl @Inject constructor(
     private val popDatabaseRepo: PopDatabaseRepository,
     private val popsRepository: PopsRepository,
@@ -17,17 +21,27 @@ class PopsPresenterImpl @Inject constructor(
 ) : PopsPresenter {
     private var popSongContract: PopSongContract? = null
 
+    /**
+     * Initialize Pop songs presenter
+     */
     override fun initializePresenter(viewContract: PopSongContract) {
         popSongContract = viewContract
     }
 
+    /**
+     * Checks network/internet availability
+     */
     override fun checkNetworkConnection() {
         networkMonitor.registerNetworkMonitor()
     }
 
+    /**
+     * Returns rock songs
+     * Fetch data from server if network is available
+     * Retrieve data saved to database otherwise
+     */
     override fun getPopMusics() {
         popSongContract?.loadingPopSongs(true)
-
         // Get responses from API call
         networkMonitor.networkState
             .subscribeOn(Schedulers.io())
@@ -51,11 +65,17 @@ class PopsPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Destroys the presenter
+     */
     override fun destroyPresenter() {
         popSongContract = null
         disposables.clear()
     }
 
+    /**
+     * Retrieves data
+     */
     private fun retrieveSongsViaNetwork() {
         popsRepository.getPopSongs()
             .subscribeOn(Schedulers.io())
@@ -74,6 +94,9 @@ class PopsPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Save data saved to database
+     */
     private fun saveRetrievedSongs(pops: List<Pop>) {
         popDatabaseRepo.insertAllSongs(pops)
             .subscribeOn(Schedulers.io())
@@ -84,6 +107,9 @@ class PopsPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Retrieves data saved to database
+     */
     private fun retrieveFromDatabase() {
         popDatabaseRepo.getAll()
             .subscribeOn(Schedulers.io())
@@ -97,6 +123,9 @@ class PopsPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Retrieves data saved to database while offline
+     */
     private fun retrieveFromDatabaseOffline() {
         popDatabaseRepo.getAll()
             .subscribeOn(Schedulers.io())
@@ -111,6 +140,9 @@ class PopsPresenterImpl @Inject constructor(
     }
 }
 
+/**
+ * Interface to present view for Classic songs
+ */
 interface PopsPresenter {
     fun initializePresenter(viewContract: PopSongContract)
     fun checkNetworkConnection()

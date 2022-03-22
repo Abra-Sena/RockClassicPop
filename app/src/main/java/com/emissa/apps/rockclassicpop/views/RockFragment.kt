@@ -1,12 +1,9 @@
 package com.emissa.apps.rockclassicpop.views
 
-import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.emissa.apps.rockclassicpop.MusicApp
 import com.emissa.apps.rockclassicpop.adapter.RockAdapter
@@ -89,6 +86,7 @@ class RockFragment : BaseFragment(), RockSongContract, MusicItemClicked {
         rockAdapter.updatePopSongs(rocks)
         toastMessageOffline(rockAdapter.itemCount, "Rock")
         binding.swipeRefreshRock.isRefreshing = false
+        showNoInternetAlertDialog()
     }
 
     override fun rockSongsOnSuccess(rocks: List<Rock>) {
@@ -101,8 +99,7 @@ class RockFragment : BaseFragment(), RockSongContract, MusicItemClicked {
     override fun rockSongsOnError(error: Throwable) {
         binding.rockRecyclerView.visibility = View.GONE
         binding.progressBarRock.visibility = View.GONE
-
-        showAlertDialog(error)
+        showErrorAlertDialog(error)
     }
 
     override fun onSongClicked(musicUrl: String) {
@@ -112,5 +109,4 @@ class RockFragment : BaseFragment(), RockSongContract, MusicItemClicked {
     companion object {
         fun newInstance() = RockFragment()
     }
-
 }

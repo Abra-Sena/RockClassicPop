@@ -9,6 +9,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+
+/**
+ * Constructor injection to implement the presenter of Classic songs
+ */
 class RocksPresenterImpl @Inject constructor(
     private val rockDatabaseRepo: RockDatabaseRepository,
     private val rocksRepository: RocksRepository,
@@ -17,17 +21,27 @@ class RocksPresenterImpl @Inject constructor(
 ) : RocksPresenter {
     private var rockSongContract: RockSongContract? = null
 
+    /**
+     * Initialize Rock songs presenter
+     */
     override fun initializePresenter(viewContract: RockSongContract) {
         rockSongContract = viewContract
     }
 
+    /**
+     * Checks network/internet availability
+     */
     override fun checkNetworkConnection() {
         networkMonitor.registerNetworkMonitor()
     }
 
+    /**
+     * Returns rock songs
+     * Fetch data from server if network is available
+     * Retrieve data saved to database otherwise
+     */
     override fun getRockMusics() {
         rockSongContract?.loadingRockSongs(true)
-
         //Get responses from API call
         networkMonitor.networkState
             .subscribeOn(Schedulers.io())
@@ -51,11 +65,17 @@ class RocksPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Destroys the presenter
+     */
     override fun destroyPresenter() {
         rockSongContract = null
         disposables.clear() //clear()
     }
 
+    /**
+     * Retrieves data
+     */
     private fun retrieveSongsViaNetwork() {
         rocksRepository.getRockSongs()
             .subscribeOn(Schedulers.io())
@@ -74,6 +94,9 @@ class RocksPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Save data saved to database
+     */
     private fun saveRetrievedSongs(rocks: List<Rock>) {
         rockDatabaseRepo.insertAllSongs(rocks)
             .subscribeOn(Schedulers.io())
@@ -84,6 +107,9 @@ class RocksPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Retrieves data saved to database
+     */
     private fun retrieveFromDatabase() {
         rockDatabaseRepo.getAll()
             .subscribeOn(Schedulers.io())
@@ -97,6 +123,9 @@ class RocksPresenterImpl @Inject constructor(
             }
     }
 
+    /**
+     * Retrieves data saved to database while offline
+     */
     private fun retrieveFromDatabaseOffline() {
         rockDatabaseRepo.getAll()
             .subscribeOn(Schedulers.io())
@@ -111,6 +140,9 @@ class RocksPresenterImpl @Inject constructor(
     }
 }
 
+/**
+ * Interface to present view for Rock songs
+ */
 interface RocksPresenter {
     fun initializePresenter(viewContract: RockSongContract)
     fun checkNetworkConnection()

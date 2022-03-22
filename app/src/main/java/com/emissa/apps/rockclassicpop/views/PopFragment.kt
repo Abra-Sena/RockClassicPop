@@ -1,6 +1,5 @@
 package com.emissa.apps.rockclassicpop.views
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,7 @@ import com.emissa.apps.rockclassicpop.model.Pop
 import com.emissa.apps.rockclassicpop.presenters.PopSongContract
 import com.emissa.apps.rockclassicpop.presenters.PopsPresenter
 import javax.inject.Inject
+
 
 class PopFragment : BaseFragment(), PopSongContract, MusicItemClicked {
 
@@ -87,6 +87,7 @@ class PopFragment : BaseFragment(), PopSongContract, MusicItemClicked {
         popAdapter.updatePopSongs(pops)
         toastMessageOffline(popAdapter.itemCount, "Pop")
         binding.swipeRefreshPop.isRefreshing = false
+        showNoInternetAlertDialog()
     }
 
     override fun popSongsOnSuccess(pops: List<Pop>) {
@@ -99,15 +100,14 @@ class PopFragment : BaseFragment(), PopSongContract, MusicItemClicked {
     override fun popSongsOnError(error: Throwable) {
         binding.popRecyclerView.visibility = View.GONE
         binding.progressBarPop.visibility = View.GONE
-
-        showAlertDialog(error)
-    }
-
-    companion object {
-        fun newInstance() = PopFragment()
+        showErrorAlertDialog(error)
     }
 
     override fun onSongClicked(musicUrl: String) {
         playSong(musicUrl)
+    }
+
+    companion object {
+        fun newInstance() = PopFragment()
     }
 }
